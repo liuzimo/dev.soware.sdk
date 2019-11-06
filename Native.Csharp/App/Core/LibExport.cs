@@ -62,10 +62,10 @@ namespace Native.Csharp.App.Core
 		{
 			// 请勿随意修改
 			//
-			// 当前项目名称: group.manager.soware
+			// 当前项目名称: com.manager.soware
 			// Api版本: 9
 
-			return string.Format ("{0},{1}", 9, "group.manager.soware");
+			return string.Format ("{0},{1}", 9, "com.manager.soware");
 		}
 
 		/// <summary>
