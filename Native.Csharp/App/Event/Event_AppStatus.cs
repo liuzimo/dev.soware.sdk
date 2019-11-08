@@ -57,7 +57,6 @@ namespace Native.Csharp.App.Event
 			Common.IsRunning = true;
             //LuaEnv.LuaEnv.RunLua("", "envent/AppEnable.lua");
            // MyExample.test();
-            Tool.Timer.TimerRun();
             //if(Common.CqApi.GetLoginQQ() == 751323264)//默认不开启tcp服务器
             // HttpListenerPostParaHelper.ListenStart();
             //第一次启动，clone下来整个项目
@@ -83,6 +82,8 @@ namespace Native.Csharp.App.Event
                     "第一次启动的提示",
                     "初始脚本下载完成，可以使用了\r\n" +
                     "激活 私聊发送 我爱你");
+
+                Tool.Timer.TimerRun();
 
 
                 Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Warning, "下载语音资源", "正在下载语音资源，请稍后，请不要重启插件，以免造成不必要的麻烦");
