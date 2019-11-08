@@ -91,6 +91,7 @@
       <HintPath>..\packages\SimpleTCP.1.0.24\lib\net45\SimpleTCP.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -130,6 +131,7 @@
     <Compile Include="App\LuaEnv\ExpressApi.cs" />
     <Compile Include="App\LuaEnv\HttpSer.cs" />
     <Compile Include="App\LuaEnv\TcpSer.cs" />
+    <Compile Include="App\tool\Timer.cs" />
     <Compile Include="App\tool\NativeConvert.cs" />
     <Compile Include="App\Core\LibExport.cs">
       <AutoGen>True</AutoGen>

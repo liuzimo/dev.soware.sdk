@@ -57,9 +57,9 @@ namespace Native.Csharp.App.Event
 			Common.IsRunning = true;
             //LuaEnv.LuaEnv.RunLua("", "envent/AppEnable.lua");
            // MyExample.test();
-            //LuaEnv.TimerRun.TimerStart();
+            Tool.Timer.TimerRun();
             //if(Common.CqApi.GetLoginQQ() == 751323264)//默认不开启tcp服务器
-           // HttpListenerPostParaHelper.ListenStart();
+            // HttpListenerPostParaHelper.ListenStart();
             //第一次启动，clone下来整个项目
             Task.Run(() => {
                 string gitPath = Common.AppDirectory;

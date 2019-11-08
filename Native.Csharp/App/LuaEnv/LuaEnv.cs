@@ -147,6 +147,8 @@ namespace Native.Csharp.App.LuaEnv
             //获取字符串ascii编码的hex串
             lua.RegisterFunction("apiSetTimerScriptWait", null, typeof(LuaApi).GetMethod("SetTimerScriptWait"));
             //设置定时脚本运行间隔时间
+            lua.RegisterFunction("apiUpdateTimerTask", null, typeof(LuaApi).GetMethod("UpdateTimerTask"));
+            //更新定时任务
             lua.RegisterFunction("apiGetHardDiskFreeSpace", null, typeof(Tools).GetMethod("GetHardDiskFreeSpace"));
             //获取指定驱动器的剩余空间总大小(单位为MB)
             lua.RegisterFunction("apiMD5Encrypt", null, typeof(Tools).GetMethod("MD5Encrypt"));

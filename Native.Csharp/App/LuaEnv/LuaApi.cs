@@ -134,8 +134,8 @@ namespace Native.Csharp.App.LuaEnv
         /// <returns>插件资源目录</returns>
         public static string GetAppName()
         {
-           string[] name = Common.AppDirectory.Split('\\');
-           return name[name.Length-2];
+            string[] name = Common.AppDirectory.Split('\\');
+            return name[name.Length - 2];
         }
         /// <summary>
         /// 获取qq消息中图片的路径
@@ -202,7 +202,7 @@ namespace Native.Csharp.App.LuaEnv
         /// <param name="path">路径</param>
         /// <param name="count">保存图片数量</param>
         /// <returns>下载结果</returns>
-        public static void HttpImageDownload(string Url,string path, int count = 10)
+        public static void HttpImageDownload(string Url, string path, int count = 10)
         {
             string dpath = Common.AppDirectory;
             dpath = dpath.Substring(0, dpath.LastIndexOf("\\"));
@@ -232,7 +232,7 @@ namespace Native.Csharp.App.LuaEnv
                     string pattern = @"<img\b[^<>]*?\boriginal[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
                     int i = 0;
 
-              
+
                     foreach (Match match in Regex.Matches(pageHtml, pattern))
                     {
                         i++;
@@ -240,7 +240,7 @@ namespace Native.Csharp.App.LuaEnv
                         using (MemoryStream ms = new MemoryStream(Bytes))
                         {
                             Image outputImg = Image.FromStream(ms);
-                            outputImg.Save(dpath + path + "\\"+i+".jpg");
+                            outputImg.Save(dpath + path + "\\" + i + ".jpg");
                         }
                         if (i == count) break;
                     }
@@ -304,7 +304,7 @@ namespace Native.Csharp.App.LuaEnv
         /// POST请求与获取结果
         /// </summary>
         public static string HttpPost(string Url, string postDataStr, int timeout = 5000,
-            string cookie = "",string contentType = "application/x-www-form-urlencoded")
+            string cookie = "", string contentType = "application/x-www-form-urlencoded")
         {
             try
             {
@@ -350,7 +350,7 @@ namespace Native.Csharp.App.LuaEnv
         /// 获取返回的header
         /// </summary>
         /// 
-        public static string GetResponseHeaders(String url,string postdata="",string cookie="")
+        public static string GetResponseHeaders(String url, string postdata = "", string cookie = "")
         {
             try
             {
@@ -361,7 +361,7 @@ namespace Native.Csharp.App.LuaEnv
                 if (cookie != "")
                     WebRequestObject.Headers.Add("cookie", cookie);
                 //post数据
-                if (postdata !="")
+                if (postdata != "")
                 {
                     //请求方式
                     WebRequestObject.Method = "POST";
@@ -393,12 +393,12 @@ namespace Native.Csharp.App.LuaEnv
             return "";
         }
 
-/// <summary>
-/// 获取本地图片的base64结果，会转成jpeg
-/// </summary>
-/// <param name="url"></param>
-/// <returns></returns>
-public static string Base64File(string path)
+        /// <summary>
+        /// 获取本地图片的base64结果，会转成jpeg
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string Base64File(string path)
         {
             return Convert.ToBase64String(System.IO.File.ReadAllBytes(path));
         }
@@ -445,7 +445,7 @@ public static string Base64File(string path)
         /// </summary>
         /// <param name="n"></param>
         /// <param name="d"></param>
-        public static void SetVar(string n,string d)
+        public static void SetVar(string n, string d)
         {
             luaTemp[n] = d;
         }
@@ -477,17 +477,17 @@ public static string Base64File(string path)
             //获取文件地址，此时返回的文件夹包含文件夹的整体路径
             String[] directorieStrings = Directory.GetDirectories(url);
             //如果需要获取文件夹的名称集合
-            String[] dlist = directorieStrings.Select(d => d.Substring(d.LastIndexOf('\\') + 1 )).ToArray();
-            array.Add(dlist.Length-1);
+            String[] dlist = directorieStrings.Select(d => d.Substring(d.LastIndexOf('\\') + 1)).ToArray();
+            array.Add(dlist.Length - 1);
             array.Add(dlist);
             return array;
         }
-        
+
         /// <summary>
-         /// 获取xml下面的文件夹列表
-         /// </summary>
-         /// <param name="p">路径</param>
-         /// <returns></returns>
+        /// 获取xml下面的文件夹列表
+        /// </summary>
+        /// <param name="p">路径</param>
+        /// <returns></returns>
         public static ArrayList FileList(String p)
         {
             ArrayList array = new ArrayList();
@@ -519,6 +519,15 @@ public static string Base64File(string path)
         /// <param name="wait"></param>
         public static void SetTimerScriptWait(int wait) => TimerRun.luaWait = wait;
 
+        /// <summary>
+        /// 更新定时任务
+        /// </summary>
+        public static void UpdateTimerTask() {
+            ArrayList data = XmlApi.nlist_get("timer", "timertask");
+            ArrayList list = data[1] as ArrayList;
+            list.RemoveAt(list.Count - 1);
+            Tool.Timer.timers = list;
+        }
         public static string CqCode_At(long qq) => Common.CqApi.CqCode_At(qq);
         //获取酷Q "At某人" 代码
         public static string CqCode_Emoji(int id) => Common.CqApi.CqCode_Emoji(id);
