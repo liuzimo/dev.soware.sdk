@@ -63,8 +63,10 @@ namespace Native.Csharp.App.Event
             Task.Run(() => {
                 string gitPath = Common.AppDirectory;
                 if (Directory.Exists(gitPath + "lua\\"))
+                {
+                    Tool.Timer.TimerRun();
                     return;//已存在工程，不用再初始化了
-
+                }
                 Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Warning, "启动提示", "正在下载初始脚本，请耐心等待，不要重启插件，以免造成不必要的麻烦");
                 try
                 {
@@ -82,8 +84,6 @@ namespace Native.Csharp.App.Event
                     "第一次启动的提示",
                     "初始脚本下载完成，可以使用了\r\n" +
                     "激活 私聊发送 我爱你");
-
-                Tool.Timer.TimerRun();
 
 
                 Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Warning, "下载语音资源", "正在下载语音资源，请稍后，请不要重启插件，以免造成不必要的麻烦");

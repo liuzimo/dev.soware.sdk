@@ -169,6 +169,10 @@ namespace Native.Csharp.App.LuaEnv
             //开启httprequest监听
             lua.RegisterFunction("apiGetResponseHeaders", null, typeof(LuaApi).GetMethod("GetResponseHeaders"));
             //获取response header头
+            lua.RegisterFunction("apiUpdateScript", null, typeof(LuaApi).GetMethod("UpdateScript"));
+            //更新脚本
+            lua.RegisterFunction("apiDelCache", null, typeof(LuaApi).GetMethod("DelCache"));
+            //删除语音图片数据
             lua.RegisterFunction("apiTimerStart", null, typeof(TimerRun).GetMethod("TimerStart"));
             //开启循环任务
             lua.RegisterFunction("apiGeneralBasic", null, typeof(BaiDuApi).GetMethod("GeneralBasic"));

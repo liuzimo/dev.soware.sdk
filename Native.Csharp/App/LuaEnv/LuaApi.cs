@@ -1,4 +1,5 @@
-﻿using Native.Csharp.Sdk.Cqp.Enum;
+﻿using LibGit2Sharp;
+using Native.Csharp.Sdk.Cqp.Enum;
 using Newtonsoft.Json;
 using System;
 using System.Collections;
@@ -744,6 +745,104 @@ namespace Native.Csharp.App.LuaEnv
                                              recname, recphone, recpro, recity, recexp, recaddr,
                                              sename,  sephone,  secpro, secity, secexp, secaddr,
                                              EBusinessID, AppKey );
+        }
+        /// <summary>
+        /// 更新脚本
+        /// </summary>
+        /// <returns></returns>
+        public static string UpdateScript()
+        {
+            string gitPath = Common.AppDirectory;
+            if (!Repository.IsValid(gitPath))
+            {
+                return "未检测到git仓库！工程不存在!";
+                //return;//工程不存在
+            }
+
+            using (var repo = new Repository(gitPath))
+            {
+                string lastCommit = repo.Commits.First().Sha;//当前提交的特征值
+
+                // Credential information to fetch
+                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
+                options.FetchOptions = new FetchOptions();
+
+                // User information to create a merge commit
+                var signature = new LibGit2Sharp.Signature(
+                    new Identity("MERGE_USER_NAME", "MERGE_USER_EMAIL"), DateTimeOffset.Now);
+
+                // Pull
+                try
+                {
+                    Commands.Pull(repo, signature, options);
+                }
+                catch
+                {
+                    return "代码拉取失败，请检查网络！";
+                }
+
+                string newCommit = repo.Commits.First().Sha;//pull后的特征值
+                if (lastCommit != newCommit)
+                {
+                    Directory.Delete(gitPath + "lua\\", true);
+                    Tools.CopyDirectory(gitPath + "appdata\\lua\\", gitPath + "lua\\",false);
+                    Tools.CopyDirectory(gitPath + "appdata\\xml\\", gitPath + "xml\\",false);
+                    return "更新完成！";
+                }
+                else
+                {
+                    return "当前已是最新版本";
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除图片语音
+        /// </summary>
+        /// <returns></returns>
+        public static string DelCache()
+        {
+            try
+            {
+                //删除过期图片文件
+                DirectoryInfo downloadDir = new DirectoryInfo(AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data/image/");
+                FileSystemInfo[] downloadFiles = downloadDir.GetFileSystemInfos();
+                for (int i = 0; i < downloadFiles.Length; i++)
+                {
+                    FileInfo file = downloadFiles[i] as FileInfo;
+                    //是文件
+                    if (file != null && file.Name.IndexOf(".luatemp") == file.Name.Length - (".luatemp").Length ||
+                        file != null && file.Name.IndexOf(".jpg") == file.Name.Length - (".jpg").Length ||
+                        file != null && file.Name.IndexOf(".png") == file.Name.Length - (".png").Length ||
+                        file != null && file.Name.IndexOf(".gif") == file.Name.Length - (".gif").Length ||
+                        file != null && file.Name.IndexOf(".cqimg") == file.Name.Length - (".cqimg").Length)
+                    {
+                        //TimeSpan time = DateTime.Now - file.CreationTime;
+                        //if (time.TotalSeconds > 120)
+                        file.Delete();
+                    }
+                }
+
+                //删除过期语音文件
+                DirectoryInfo recordDir = new DirectoryInfo(AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data/record/");
+                FileSystemInfo[] recordFiles = recordDir.GetFileSystemInfos();
+                for (int i = 0; i < recordFiles.Length; i++)
+                {
+                    FileInfo file = recordFiles[i] as FileInfo;
+                    //是文件
+                    if (file != null)
+                    {
+                        //TimeSpan time = DateTime.Now - file.CreationTime;
+                        //if (time.TotalSeconds > 60)
+                        file.Delete();
+                    }
+                }
+                return "清理成功！";
+            }
+            catch
+            {
+                return "清理失败！";
+            }
         }
     }
 }
