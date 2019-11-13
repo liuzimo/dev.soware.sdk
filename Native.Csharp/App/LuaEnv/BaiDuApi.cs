@@ -12,7 +12,7 @@ namespace Native.Csharp.App.LuaEnv
     class BaiDuApi
     {
         //本地图片文字识别
-        public static string GeneralBasic(string filename,string API_KEY,string SECRET_KEY)
+        public static string GeneralBasic(string filename,string API_KEY , string SECRET_KEY)
         {
             try { 
                 //var APP_ID = "你的 App ID";
@@ -49,7 +49,7 @@ namespace Native.Csharp.App.LuaEnv
         }
 
         //链接图片识别文字
-        public static void GeneralBasicUrl(string url, string API_KEY, string SECRET_KEY)
+        public static void GeneralBasicUrl(string url, string API_KEY , string SECRET_KEY)
         {
             try { 
                 var client = new Baidu.Aip.Ocr.Ocr(API_KEY, SECRET_KEY);
@@ -107,7 +107,34 @@ namespace Native.Csharp.App.LuaEnv
                 Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Error, "网络图片识别错误", e.ToString());
                 return "";
             }
-}
+        }
+        // 图片鉴黄
+        public static String ImgRaise(string filename,string API_KEY= "Yr6Z6H094vWVvy844W4hvQft", string SECRET_KEY= "l4mDED2uRdqnbGL2OYAM0bk5NgceTpQd")
+        {
+            try { 
+                //var APP_ID = "你的 App ID";
+                //var API_KEY = "你的 Api Key";
+                //var SECRET_KEY = "你的 Secret Key";
+                string dpath = Common.AppDirectory;
+                dpath = dpath.Substring(0, dpath.LastIndexOf("\\"));
+                dpath = dpath.Substring(0, dpath.LastIndexOf("\\"));
+                dpath = dpath.Substring(0, dpath.LastIndexOf("\\") + 1);
+
+                var client = new Baidu.Aip.ContentCensor.AntiPorn(API_KEY, SECRET_KEY);
+                client.Timeout = 60000;  // 超时，毫秒
+                var image = File.ReadAllBytes(dpath + "image\\" + filename);
+                // 过程中发生的网络失败等系统错误，将会抛出相关异常，请使用 try/catch 捕获。
+
+                var result = client.Detect(image);
+
+                return result.ToString();
+            }
+            catch (Exception e)
+            {
+                Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Error, "图片鉴黄", e.ToString());
+                return "";
+            }
+        }
 
         public static String GetFileBase64(String fileName)
         {

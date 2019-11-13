@@ -785,7 +785,7 @@ namespace Native.Csharp.App.LuaEnv
                 if (lastCommit != newCommit)
                 {
                     Directory.Delete(gitPath + "lua\\", true);
-                    Tools.CopyDirectory(gitPath + "appdata\\lua\\", gitPath + "lua\\",false);
+                    Tools.CopyDirectory(gitPath + "appdata\\lua\\", gitPath + "lua\\");
                     Tools.CopyDirectory(gitPath + "appdata\\xml\\", gitPath + "xml\\",false);
                     return "更新完成！";
                 }
