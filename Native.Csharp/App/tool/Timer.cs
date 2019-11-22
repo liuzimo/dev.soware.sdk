@@ -7,7 +7,7 @@ namespace Native.Csharp.App.Tool
     {
         private static bool start = false;
         public static ArrayList timers; //定时器任务列表
-        private static uint count = 60;
+        private static uint longcount = 60;
         public static void TimerRun()
         {
             if (start)
@@ -30,10 +30,10 @@ namespace Native.Csharp.App.Tool
             int intMinute = e.SignalTime.Minute;
             int intSecond = e.SignalTime.Second;
 
-            count++;
-            if (count >= 60)//每分钟执行脚本
+            longcount++;
+            if (longcount >= 60)//每分钟执行脚本
             {
-                count = 0;
+                longcount = 0;
 
                 foreach (var time in timers)
                 {

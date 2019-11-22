@@ -123,8 +123,10 @@ namespace Native.Csharp.App.LuaEnv
             //获取qq消息中图片的网址
             lua.RegisterFunction("apiHttpFileDownload", null, typeof(LuaApi).GetMethod("HttpFileDownload"));
             //下载文件
+            lua.RegisterFunction("apiHttpImagesDownload", null, typeof(LuaApi).GetMethod("HttpImagesDownload"));
+            //爬取多个图片
             lua.RegisterFunction("apiHttpImageDownload", null, typeof(LuaApi).GetMethod("HttpImageDownload"));
-            //爬取图片
+            //爬取单个图片
             lua.RegisterFunction("apiHttpGet", null, typeof(LuaApi).GetMethod("HttpGet"));
             //GET 请求与获取结果
             lua.RegisterFunction("apiHttpPost", null, typeof(LuaApi).GetMethod("HttpPost"));

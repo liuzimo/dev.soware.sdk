@@ -197,13 +197,13 @@ namespace Native.Csharp.App.LuaEnv
 
 
         /// <summary>
-        /// 爬取图片
+        /// 爬取多个图片
         /// </summary>
         /// <param name="Url">图片网址</param>
         /// <param name="path">路径</param>
         /// <param name="count">保存图片数量</param>
         /// <returns>下载结果</returns>
-        public static void HttpImageDownload(string Url, string path, int count = 10)
+        public static void HttpImagesDownload(string Url, string path, int count = 10)
         {
             string dpath = Common.AppDirectory;
             dpath = dpath.Substring(0, dpath.LastIndexOf("\\"));
@@ -245,11 +245,47 @@ namespace Native.Csharp.App.LuaEnv
                         }
                         if (i == count) break;
                     }
+                    MyWebClient.Dispose();
                 }
                 catch (Exception e)
                 {
                     Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Error, "抓取图片错误", e.ToString());
                 }
+            }
+        }
+
+        /// <summary>
+        /// 爬取单个图片
+        /// </summary>
+        /// <param name="Url">图片网址</param>
+        /// <param name="path">路径</param>
+        /// <param name="count">保存图片数量</param>
+        /// <returns>下载结果</returns>
+        public static void HttpImageDownload(string Url, string path="",string name = "goods")
+        {
+            string dpath = Common.AppDirectory;
+            dpath = dpath.Substring(0, dpath.LastIndexOf("\\"));
+            dpath = dpath.Substring(0, dpath.LastIndexOf("\\"));
+            dpath = dpath.Substring(0, dpath.LastIndexOf("\\") + 1);
+            if (!Directory.Exists(dpath + path + "\\"))
+            {
+                Directory.CreateDirectory(dpath + path + "\\");
+            }
+            try
+            {
+                WebClient MyWebClient = new WebClient();
+                byte[] imgData = MyWebClient.DownloadData(Url); //从指定网站下载数据
+
+                using (MemoryStream ms = new MemoryStream(imgData))
+                {
+                    Image outputImg = Image.FromStream(ms);
+                    outputImg.Save(dpath + path + "\\" + name + ".jpg");
+                }
+                MyWebClient.Dispose();
+            }
+            catch (Exception e)
+            {
+                Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Error, "下载图片错误", e.ToString());
             }
         }
 
@@ -339,6 +375,7 @@ namespace Native.Csharp.App.LuaEnv
                 }
                 StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
                 string retString = reader.ReadToEnd();
+                reader.Close();
                 return retString;
             }
             catch (Exception e)
@@ -440,7 +477,7 @@ namespace Native.Csharp.App.LuaEnv
             }
         }
 
-        private static Dictionary<string, string> luaTemp = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> luaTemp = new Dictionary<string, string>();
         /// <summary>
         /// 把值存入ram
         /// </summary>
@@ -828,9 +865,8 @@ namespace Native.Csharp.App.LuaEnv
                 FileSystemInfo[] recordFiles = recordDir.GetFileSystemInfos();
                 for (int i = 0; i < recordFiles.Length; i++)
                 {
-                    FileInfo file = recordFiles[i] as FileInfo;
                     //是文件
-                    if (file != null)
+                    if (recordFiles[i] is FileInfo file)
                     {
                         //TimeSpan time = DateTime.Now - file.CreationTime;
                         //if (time.TotalSeconds > 60)
