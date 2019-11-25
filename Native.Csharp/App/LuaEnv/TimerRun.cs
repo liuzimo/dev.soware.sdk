@@ -9,7 +9,7 @@ namespace Native.Csharp.App.LuaEnv
     {
         private static bool start = false;
         public static int luaWait = 7200;//间隔多少秒执行一次
-        private static uint count = 3600;
+        private static uint count = 7200;
         public static void TimerStart()
         {
             if (start)
