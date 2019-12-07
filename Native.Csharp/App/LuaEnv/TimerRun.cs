@@ -8,6 +8,8 @@ namespace Native.Csharp.App.LuaEnv
     class TimerRun
     {
         private static bool start = false;
+        private static System.Timers.Timer timer;
+        private static System.Timers.Timer timer2;
         public static int luaWait = 7200;//间隔多少秒执行一次
         private static uint count = 7200;
         public static void TimerStart()
@@ -15,25 +17,38 @@ namespace Native.Csharp.App.LuaEnv
             if (start)
                 return;
             start = true;
-            System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Enabled = true;
-            timer.Interval = 1000;//1s
+            timer = new System.Timers.Timer
+            {
+                Enabled = true,
+                Interval = 1000//1s
+            };
             timer.Elapsed += new System.Timers.ElapsedEventHandler(Timer1_Elapsed);
             timer.Start();
 
-            System.Timers.Timer timer2 = new System.Timers.Timer();
-            timer2.Enabled = true;
-            timer2.Interval = 60000;//1m
+            timer2 = new System.Timers.Timer
+            {
+                Enabled = true,
+                Interval = 60000//1m
+            };
             timer2.Elapsed += new System.Timers.ElapsedEventHandler(Timer2_Elapsed);
             timer2.Start();
         }
 
-        public static void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)  //1s定时程序
+        public static void TimerStop()
+        {
+            if (start)
+            {
+                timer.Stop();
+                timer2.Stop();
+            }
+        }
+
+            public static void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)  //1s定时程序
         {
             // 得到 hour minute second  如果等于某个值就开始执行某个程序。  
-            int intHour = e.SignalTime.Hour;
-            int intMinute = e.SignalTime.Minute;
-            int intSecond = e.SignalTime.Second;
+            //int intHour = e.SignalTime.Hour;
+            //int intMinute = e.SignalTime.Minute;
+            //int intSecond = e.SignalTime.Second;
 
             count++;
             if (count >= luaWait)//每分钟执行脚本
@@ -62,8 +77,10 @@ namespace Native.Csharp.App.LuaEnv
                     string lastCommit = repo.Commits.First().Sha;//当前提交的特征值
 
                     // Credential information to fetch
-                    LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
-                    options.FetchOptions = new FetchOptions();
+                    LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions
+                    {
+                        FetchOptions = new FetchOptions()
+                    };
 
                     // User information to create a merge commit
                     var signature = new LibGit2Sharp.Signature(
@@ -102,8 +119,8 @@ namespace Native.Csharp.App.LuaEnv
         public static void Timer2_Elapsed(object sender, System.Timers.ElapsedEventArgs e)  //1m定时程序
         {
             // 得到 hour minute second  如果等于某个值就开始执行某个程序。  
-            int intHour = e.SignalTime.Hour;
-            int intMinute = e.SignalTime.Minute;
+            //int intHour = e.SignalTime.Hour;
+            //int intMinute = e.SignalTime.Minute;
 
             //删除过期图片文件
             DirectoryInfo downloadDir = new DirectoryInfo(AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "data/image/");
@@ -128,9 +145,8 @@ namespace Native.Csharp.App.LuaEnv
             FileSystemInfo[] recordFiles = recordDir.GetFileSystemInfos();
             for (int i = 0; i < recordFiles.Length; i++)
             {
-                FileInfo file = recordFiles[i] as FileInfo;
                 //是文件
-                if (file != null)
+                if (recordFiles[i] is FileInfo file)
                 {
                     TimeSpan time = DateTime.Now - file.CreationTime;
                     if (time.TotalSeconds > 60)

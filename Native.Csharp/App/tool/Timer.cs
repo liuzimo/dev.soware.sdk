@@ -6,6 +6,7 @@ namespace Native.Csharp.App.Tool
     class Timer
     {
         private static bool start = false;
+        private static System.Timers.Timer timer;
         public static ArrayList timers; //定时器任务列表
         private static uint longcount = 60;
         public static void TimerRun()
@@ -16,11 +17,19 @@ namespace Native.Csharp.App.Tool
 
             LuaEnv.LuaApi.UpdateTimerTask(); //更新定时器任务列表
 
-            System.Timers.Timer timer = new System.Timers.Timer();
-            //timer.Enabled = true;
-            timer.Interval = 1000;//1s
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(Timer1_Elapsed);
-            timer.Start();
+            timer = new System.Timers.Timer();
+            try {
+                //timer.Enabled = true;
+                timer.Interval = 1000;//1s
+                timer.Elapsed += new System.Timers.ElapsedEventHandler(Timer1_Elapsed);
+                timer.Start();
+            }
+            catch(Exception e)
+            {
+                Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Error, "定时任务错误","定时任务异常,已退出.如有问题请联系作者QQ 919825501");
+                timer.Stop();
+            }
+
         }
 
         public static void Timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)  //1s定时程序
@@ -28,7 +37,7 @@ namespace Native.Csharp.App.Tool
             // 得到 hour minute second  如果等于某个值就开始执行某个程序。  
             int intHour = e.SignalTime.Hour;
             int intMinute = e.SignalTime.Minute;
-            int intSecond = e.SignalTime.Second;
+            //int intSecond = e.SignalTime.Second;
 
             longcount++;
             if (longcount >= 60)//每分钟执行脚本

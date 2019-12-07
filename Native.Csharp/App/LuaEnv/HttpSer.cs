@@ -29,45 +29,11 @@ namespace Native.Csharp.App.LuaEnv
     /// </summary>  
     public class HttpListenerPostParaHelper
     {
-        private HttpListenerContext request;
+        private readonly HttpListenerContext request;
 
         public HttpListenerPostParaHelper(HttpListenerContext request)
         {
             this.request = request;
-        }
-
-        private bool CompareBytes(byte[] source, byte[] comparison)
-        {
-            try
-            {
-                int count = source.Length;
-                if (source.Length != comparison.Length)
-                    return false;
-                for (int i = 0; i < count; i++)
-                    if (source[i] != comparison[i])
-                        return false;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private byte[] ReadLineAsBytes(System.IO.Stream SourceStream)
-        {
-            var resultStream = new MemoryStream();
-            while (true)
-            {
-                int data = SourceStream.ReadByte();
-                resultStream.WriteByte((byte)data);
-                if (data == 10)
-                    break;
-            }
-            resultStream.Position = 0;
-            byte[] dataBytes = new byte[resultStream.Length];
-            resultStream.Read(dataBytes, 0, dataBytes.Length);
-            return dataBytes;
         }
 
         /// <summary>  
@@ -94,8 +60,8 @@ namespace Native.Csharp.App.LuaEnv
             }
         }
 
-        private static HttpListener httpPostRequest = new HttpListener();
-        private static void httpPostRequestHandle()
+        private static readonly HttpListener httpPostRequest = new HttpListener();
+        private static void HttpPostRequestHandle()
         {
             while (true)
             {
@@ -133,16 +99,21 @@ namespace Native.Csharp.App.LuaEnv
             }
         }
 
-        public static void ListenStart()
+        public static void ListenStart(string url)
         {
-            httpPostRequest.Prefixes.Add("http://172.16.196.77:2000/recive/");
+            httpPostRequest.Prefixes.Add(url);
             httpPostRequest.Start();
 
-            Thread ThrednHttpPostRequest = new Thread(new ThreadStart(httpPostRequestHandle));
+            Thread ThrednHttpPostRequest = new Thread(new ThreadStart(HttpPostRequestHandle));
             ThrednHttpPostRequest.Start();
-            Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Info, "tcp server", "Server Get Message:" + "开启");//把客户端传来的信息显示出来
+            Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Info, "http server", "Server Get Message:" + "开启");//把客户端传来的信息显示出来
 
         }
+        public static void ListenStop()
+        {
+            httpPostRequest.Stop();
 
+            Common.CqApi.AddLoger(Sdk.Cqp.Enum.LogerLevel.Info, "http server", "Server Get Message:" + "关闭");
+        }
     }
 }

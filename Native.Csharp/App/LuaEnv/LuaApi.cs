@@ -215,8 +215,10 @@ namespace Native.Csharp.App.LuaEnv
 
                 try
                 {
-                    WebClient MyWebClient = new WebClient();
-                    MyWebClient.Credentials = CredentialCache.DefaultCredentials;//获取或设置用于向Internet资源的请求进行身份验证的网络凭据
+                    WebClient MyWebClient = new WebClient
+                    {
+                        Credentials = CredentialCache.DefaultCredentials//获取或设置用于向Internet资源的请求进行身份验证的网络凭据
+                    };
                     Byte[] pageData = MyWebClient.DownloadData(Url); //从指定网站下载数据
                     //string pageHtml = Encoding.Default.GetString(pageData);  //如果获取网站页面采用的是GB2312，则使用这句    
                     string pageHtml = Encoding.UTF8.GetString(pageData); //如果获取网站页面采用的是UTF-8，则使用这句
@@ -566,6 +568,10 @@ namespace Native.Csharp.App.LuaEnv
             list.RemoveAt(list.Count - 1);
             Tool.Timer.timers = list;
         }
+        public static string CqCode_Cookies(string domain) => Common.CqApi.GetCookies(domain);
+        //获取酷Q "Cookie" 代码
+        public static int CqGetCsrfToken() => Common.CqApi.GetCsrfToken();
+        //获取酷Q "g_tk" 代码
         public static string CqCode_At(long qq) => Common.CqApi.CqCode_At(qq);
         //获取酷Q "At某人" 代码
         public static string CqCode_Emoji(int id) => Common.CqApi.CqCode_Emoji(id);
@@ -681,6 +687,42 @@ namespace Native.Csharp.App.LuaEnv
             return td;
         }
         //获取群列表
+        public static Dictionary<string, object> GetGroupInfo(long groupId, bool notCache = false)
+        {
+            Sdk.Cqp.Model.GroupInfo g = Common.CqApi.GetGroupInfo(groupId, notCache);
+
+            Dictionary<string, object> t = new Dictionary<string, object>
+            {
+                ["Id"] = g.Id,
+                ["Name"] = g.Name,
+                ["CurrentNumber"] = g.CurrentNumber,
+                ["MaximumNumber"] = g.MaximumNumber
+            };
+            return t;
+        }
+        //获取群当前人数和最大人数
+        public static ArrayList GetFriendList()
+        {
+            List<Sdk.Cqp.Model.FriendInfo> qqInfos = Common.CqApi.GetFriendList();
+
+            ArrayList td = new ArrayList();
+            ArrayList ts = new ArrayList();
+            td.Add(qqInfos.Count - 1);
+
+            foreach (var g in qqInfos)
+            {
+                Dictionary<string, object> t = new Dictionary<string, object>
+                {
+                    ["Id"] = g.Id,
+                    ["Nick"] = g.Nick,
+                    ["Note"] = g.Note
+                };
+                ts.Add(t);
+            }
+            td.Add(ts);
+            return td;
+        }
+        //获取好友列表
         public static int AddLoger(int level, string type, string content) => Common.CqApi.AddLoger((Sdk.Cqp.Enum.LogerLevel)level, type, content);
         //添加日志
         public static int AddFatalError(string msg) => Common.CqApi.AddFatalError(msg);
@@ -801,8 +843,10 @@ namespace Native.Csharp.App.LuaEnv
                 string lastCommit = repo.Commits.First().Sha;//当前提交的特征值
 
                 // Credential information to fetch
-                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions();
-                options.FetchOptions = new FetchOptions();
+                LibGit2Sharp.PullOptions options = new LibGit2Sharp.PullOptions
+                {
+                    FetchOptions = new FetchOptions()
+                };
 
                 // User information to create a merge commit
                 var signature = new LibGit2Sharp.Signature(

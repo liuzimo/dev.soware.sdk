@@ -20,6 +20,10 @@ namespace Native.Csharp.App.LuaEnv
             ///////////////
             //酷q类的接口//
             //////////////
+            lua.RegisterFunction("cqCqCode_Cookies", null, typeof(LuaApi).GetMethod("CqCode_Cookies"));
+            //获取酷Q "Cookie" 代码
+            lua.RegisterFunction("cqCqGetCsrfToken", null, typeof(LuaApi).GetMethod("CqGetCsrfToken"));
+            //获取酷Q "g_tk" 代码
             lua.RegisterFunction("cqCode_At", null, typeof(LuaApi).GetMethod("CqCode_At"));
             //获取酷Q "At某人" 代码
             lua.RegisterFunction("cqCqCode_Emoji", null, typeof(LuaApi).GetMethod("CqCode_Emoji"));
@@ -72,6 +76,10 @@ namespace Native.Csharp.App.LuaEnv
             //获取全部群成员信息
             lua.RegisterFunction("cqGetGroupList", null, typeof(LuaApi).GetMethod("GetGroupList"));
             //获取群列表
+            lua.RegisterFunction("cqGetGroupInfo", null, typeof(LuaApi).GetMethod("GetGroupInfo"));
+            //获取群当前人数和最大人数
+            lua.RegisterFunction("cqGetFriendList", null, typeof(LuaApi).GetMethod("GetFriendList"));
+            //获取好友列表
             lua.RegisterFunction("cqAddLoger", null, typeof(LuaApi).GetMethod("AddLoger"));
             //添加日志
             lua.RegisterFunction("cqAddFatalError", null, typeof(LuaApi).GetMethod("AddFatalError"));
@@ -169,6 +177,14 @@ namespace Native.Csharp.App.LuaEnv
             //连接tcp服务器
             lua.RegisterFunction("apiListenStart", null, typeof(HttpListenerPostParaHelper).GetMethod("ListenStart"));
             //开启httprequest监听
+            lua.RegisterFunction("apiListenStop", null, typeof(HttpListenerPostParaHelper).GetMethod("ListenStop"));
+            //关闭httprequest监听
+            lua.RegisterFunction("apiWebSocketStart", null, typeof(Cap).GetMethod("WebSocketStart"));
+            //开启websocket监听
+            lua.RegisterFunction("apiRun", null, typeof(Cap).GetMethod("Run"));
+            //开启opencv
+            lua.RegisterFunction("apiWebSocketStop", null, typeof(Cap).GetMethod("WebSocketStop"));
+            //关闭websocket监听
             lua.RegisterFunction("apiGetResponseHeaders", null, typeof(LuaApi).GetMethod("GetResponseHeaders"));
             //获取response header头
             lua.RegisterFunction("apiUpdateScript", null, typeof(LuaApi).GetMethod("UpdateScript"));
@@ -177,6 +193,8 @@ namespace Native.Csharp.App.LuaEnv
             //删除语音图片数据
             lua.RegisterFunction("apiTimerStart", null, typeof(TimerRun).GetMethod("TimerStart"));
             //开启循环任务
+            lua.RegisterFunction("apiTimerStop", null, typeof(TimerRun).GetMethod("TimerStop"));
+            //关闭循环任务
             lua.RegisterFunction("apiGeneralBasic", null, typeof(BaiDuApi).GetMethod("GeneralBasic"));
             //本地图片文字识别
             lua.RegisterFunction("apiGeneralBasicUrl", null, typeof(BaiDuApi).GetMethod("GeneralBasicUrl"));
